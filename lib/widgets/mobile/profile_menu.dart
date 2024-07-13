@@ -3,7 +3,7 @@ import 'package:fusion/models/menu_item.dart';
 
 class ProfileMenu extends StatelessWidget {
   final List<MenuItem> menuItems;
-  final Function(Widget) onMenuItemSelected;
+  final Function(int) onMenuItemSelected;
 
   const ProfileMenu({
     super.key,
@@ -17,7 +17,9 @@ class ProfileMenu extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: menuItems.map((item) {
+        children: menuItems.asMap().entries.map((entry) {
+          int index = entry.key;
+          MenuItem item = entry.value;
           return ListTile(
             leading: Icon(item.icon),
             title: Text(item.name),
@@ -26,7 +28,7 @@ class ProfileMenu extends StatelessWidget {
               Navigator.pop(context);  // Close the bottom sheet
               Future.delayed(
                   const Duration(milliseconds: 300),
-                      () => onMenuItemSelected(item.widgetBuilder())
+                      () => onMenuItemSelected(index + 1)
               );  // Ensure state update after closing
             },
           );

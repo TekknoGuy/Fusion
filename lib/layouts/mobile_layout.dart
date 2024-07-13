@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fusion/models/menu_item.dart';
 import 'package:fusion/widgets/mobile/profile_menu.dart';
 import 'package:fusion/widgets/mobile/profile_menu_items.dart';
 import 'package:fusion/widgets/mobile/main_screen.dart';
-
-// import 'package:fusion/widgets/mobile/settings_screen.dart';
-// import 'package:fusion/widgets/mobile/profile_screen.dart';
 
 class MobileLayout extends StatefulWidget {
   const MobileLayout({super.key});
@@ -17,13 +15,23 @@ class _MobileLayoutState extends State<MobileLayout> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
 
+  late List<MenuItem> _menuItems;
+
+  @override
+  void initState() {
+    super.initState();
+    _menuItems = getMenuItems(() {
+      _goToPage(0);
+    });
+  }
+
   void _showProfileMenu(BuildContext context) {
     debugPrint('Showing profile menu');
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return ProfileMenu(
-          menuItems: menuItems,
+          menuItems: _menuItems,
           onMenuItemSelected: (index) {
             _goToPage(index);
           },
@@ -40,8 +48,9 @@ class _MobileLayoutState extends State<MobileLayout> {
 
   void _goToPage(int page) {
     setState(() {
-      _pageController.animateToPage(page,
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      // _pageController.animateToPage(page,
+      //     duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.jumpToPage(page);
     });
   }
 
@@ -80,12 +89,14 @@ class _MobileLayoutState extends State<MobileLayout> {
         body: PageView(
           controller: _pageController,
           onPageChanged: _onPageChanged,
-          physics: const NeverScrollableScrollPhysics(), // Prevent swipe navigation
+          physics: const NeverScrollableScrollPhysics(),
+          // Prevent swipe navigation
           children: [
             const MainScreen(),
-            ...menuItems.map((item) => item.widget).toList(),
+            ..._menuItems.map((item) => item.widgetBuilder()),
           ],
-        ),      ),
+        ),
+      ),
     );
   }
 }
