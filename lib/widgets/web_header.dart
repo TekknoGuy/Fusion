@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'login_dialog.dart';
+
 class Header extends StatelessWidget {
   final VoidCallback onMenuPressed;
 
@@ -19,7 +21,7 @@ class Header extends StatelessWidget {
           Expanded(
             child: Center(
               child: Text(
-                'Header',
+                'Fusion Web App',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
@@ -28,6 +30,12 @@ class Header extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: ElevatedButton(
               onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const LoginDialog();
+                  }
+                );
                 // Handle login button press
                 print('Login button pressed');
               },
