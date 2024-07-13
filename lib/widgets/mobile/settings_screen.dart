@@ -12,7 +12,9 @@ class SettingsScreen extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.arrow_back),
           title: const Text('Back'),
-          onTap: onBack,
+          onTap: () {
+            onBack();
+          },
         ),
         // Add more settings options here
         const Center(

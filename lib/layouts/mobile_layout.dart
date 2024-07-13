@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fusion/widgets/mobile/profile_menu.dart';
+import 'package:fusion/widgets/mobile/profile_menu_items.dart';
 import 'package:fusion/widgets/mobile/main_screen.dart';
-import 'package:fusion/widgets/mobile/settings_screen.dart';
+
+// import 'package:fusion/widgets/mobile/settings_screen.dart';
+// import 'package:fusion/widgets/mobile/profile_screen.dart';
 
 class MobileLayout extends StatefulWidget {
   const MobileLayout({super.key});
@@ -11,29 +14,40 @@ class MobileLayout extends StatefulWidget {
 }
 
 class _MobileLayoutState extends State<MobileLayout> {
-  int _currentIndex = 0;
+  int _currentPage = 0;
+  final PageController _pageController = PageController();
 
   void _showProfileMenu(BuildContext context) {
+    debugPrint('Showing profile menu');
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return ProfileMenu(onSettingsTapped: () {
-          _switchToScreen(1);
-          Navigator.pop(context);
-        });
+        return ProfileMenu(
+          menuItems: menuItems,
+          onMenuItemSelected: (index) {
+            _goToPage(index);
+          },
+        );
       },
     );
   }
 
-  void _switchToScreen(int index) {
+  void _onPageChanged(int page) {
     setState(() {
-      _currentIndex = index;
+      _currentPage = page;
+    });
+  }
+
+  void _goToPage(int page) {
+    setState(() {
+      _pageController.animateToPage(page,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     });
   }
 
   Future<bool> _onWillPop() async {
-    if (_currentIndex != 0) {
-      _switchToScreen(0);
+    if (_currentPage != 0) {
+      _goToPage(0);
       return false; // Prevents default back button behavior
     }
     return true; // Allows the default back button behavior
@@ -63,16 +77,15 @@ class _MobileLayoutState extends State<MobileLayout> {
             ),
           ],
         ),
-        body: IndexedStack(
-          index: _currentIndex,
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          physics: const NeverScrollableScrollPhysics(), // Prevent swipe navigation
           children: [
             const MainScreen(),
-            SettingsScreen(onBack: () {
-              _switchToScreen(0);
-            }),
+            ...menuItems.map((item) => item.widget).toList(),
           ],
-        ),
-      ),
+        ),      ),
     );
   }
 }

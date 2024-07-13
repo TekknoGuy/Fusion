@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fusion/models/menu_item.dart';
 
 class ProfileMenu extends StatelessWidget {
-  final VoidCallback onSettingsTapped;
+  final List<MenuItem> menuItems;
+  final Function(Widget) onMenuItemSelected;
 
-  const ProfileMenu({super.key, required this.onSettingsTapped});
+  const ProfileMenu({
+    super.key,
+    required this.menuItems,
+    required this.onMenuItemSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,34 +17,20 @@ class ProfileMenu extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
+        children: menuItems.map((item) {
+          return ListTile(
+            leading: Icon(item.icon),
+            title: Text(item.name),
             onTap: () {
-              debugPrint('Settings tapped');
-              Navigator.pop(context);                                           // Close the bottom sheet
-              onSettingsTapped();                                               // Trigger callback to show settings
+              debugPrint('${item.name} option tapped');
+              Navigator.pop(context);  // Close the bottom sheet
+              Future.delayed(
+                  const Duration(milliseconds: 300),
+                      () => onMenuItemSelected(item.widgetBuilder())
+              );  // Ensure state update after closing
             },
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text('Profile'),
-            onTap: () {
-              debugPrint('Profile tapped');
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {
-              debugPrint('Logout tapped');
-              Navigator.pop(context);
-            },
-          ),
-          // Add more ListTiles as needed
-        ],
+          );
+        }).toList(),
       ),
     );
   }
