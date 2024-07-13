@@ -1,4 +1,4 @@
-# fusion
+# Fusion
 
 A new Flutter project.
 
