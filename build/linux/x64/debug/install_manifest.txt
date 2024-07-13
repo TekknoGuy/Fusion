@@ -1,0 +1,15 @@
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/fusion
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/lib/libflutter_secure_storage_linux_plugin.so
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/version.json
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/assets/images/2.0x/flutter_logo.png
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/assets/images/3.0x/flutter_logo.png
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/assets/images/flutter_logo.png
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/ryan/src/flutter/Fusion/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
