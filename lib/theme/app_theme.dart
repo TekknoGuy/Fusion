@@ -27,7 +27,8 @@ class AppTheme {
       brightness: Brightness.light,
       primary: lightPrimaryColor,
       onPrimary: lightOnPrimaryColor,
-      secondary: lightPrimaryColor, // You can define a separate secondary color if needed
+      secondary: lightPrimaryColor,
+      // You can define a separate secondary color if needed
       onSecondary: lightOnPrimaryColor,
       error: lightErrorColor,
       onError: lightOnErrorColor,
@@ -60,7 +61,8 @@ class AppTheme {
       brightness: Brightness.dark,
       primary: darkPrimaryColor,
       onPrimary: darkOnPrimaryColor,
-      secondary: darkPrimaryColor, // You can define a separate secondary color if needed
+      secondary: darkPrimaryColor,
+      // You can define a separate secondary color if needed
       onSecondary: darkOnPrimaryColor,
       error: darkErrorColor,
       onError: darkOnErrorColor,
@@ -87,7 +89,7 @@ class AppTheme {
     ),
   );
 
-  static bool isDarkMode(BuildContext context) {
-    return MediaQuery.of(context).platformBrightness == Brightness.dark;
-  }
+  // static bool isDarkMode(BuildContext context) {
+  //   return MediaQuery.of(context).platformBrightness == Brightness.dark;
+  // }
 }

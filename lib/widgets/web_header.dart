@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'login_dialog.dart';
 
 class Header extends StatelessWidget {
@@ -37,7 +36,7 @@ class Header extends StatelessWidget {
                   }
                 );
                 // Handle login button press
-                print('Login button pressed');
+                debugPrint('Login button pressed');
               },
               child: const Text('Login'),
             ),

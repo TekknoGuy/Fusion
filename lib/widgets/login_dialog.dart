@@ -1,11 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:fusion/services/auth_service.dart';
+import 'package:fusion/widgets/custom_snackbar.dart';
 
-class LoginDialog extends StatelessWidget {
+class LoginDialog extends StatefulWidget {
   const LoginDialog({super.key});
 
   @override
+  LoginDialogState createState() => LoginDialogState();
+}
+
+class LoginDialogState extends State<LoginDialog> {
+  static final TextEditingController usernameController =
+  TextEditingController();
+  static final TextEditingController passwordController =
+  TextEditingController();
+
+  Future<void> _login() async {
+    final result = await AuthService.login(
+        usernameController.text, passwordController.text);
+
+    if (!mounted) return; // Check if the widget is still in the widget tree
+
+    if (result.success) {
+      if (result.message != null) {
+        CustomSnackBar.show(context, result.message!);
+      }
+    } else {
+      CustomSnackBar.show(context, result.message ?? 'An error occurred');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
@@ -25,11 +52,11 @@ class LoginDialog extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
-            shape: BoxShape.rectangle,
+            // shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(16.0),
             boxShadow: const [
               BoxShadow(
-                color: Colors.black26,
+                color: Colors.black54,
                 blurRadius: 10.0,
                 offset: Offset(0.0, 10.0),
               ),
@@ -46,16 +73,18 @@ class LoginDialog extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
               TextField(
+                controller: usernameController,
                 decoration: InputDecoration(
                   hintText: 'Username',
                   border: const OutlineInputBorder(),
                   filled: true,
                   fillColor: theme.colorScheme.surface,
                 ),
-                style: TextStyle(color: theme.colorScheme.onBackground),
+                style: TextStyle(color: theme.colorScheme.onSurface),
               ),
               const SizedBox(height: 16.0),
               TextField(
+                controller: passwordController,
                 decoration: InputDecoration(
                   hintText: 'Password',
                   border: const OutlineInputBorder(),
@@ -70,7 +99,8 @@ class LoginDialog extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Dismiss the dialog
+                    _login();
+                    // Navigator.of(context).pop(); // Dismiss the dialog
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: theme.colorScheme.primary,

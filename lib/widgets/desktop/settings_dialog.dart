@@ -1,45 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/notifiers/theme_notifier.dart';
-import 'package:provider/provider.dart';
+import 'package:fusion/widgets/generic/theme_selector.dart';
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
-
     return AlertDialog(
       title: const Text('Settings'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.brightness_6),
-              title: const Text('Theme'),
-              trailing: DropdownButton<ThemeMode>(
-                value: themeNotifier.themeMode,
-                items: const [
-                  DropdownMenuItem(
-                    value: ThemeMode.light,
-                    child: Text('Light'),
-                  ),
-                  DropdownMenuItem(
-                    value: ThemeMode.dark,
-                    child: Text('Dark'),
-                  ),
-                  DropdownMenuItem(
-                    value: ThemeMode.system,
-                    child: Text('System'),
-                  ),
-                ],
-                onChanged: (ThemeMode? newValue) {
-                  if(newValue != null) {
-                    themeNotifier.setThemeMode(newValue);
-                  }
-                },
-              ),
-            ),
+            const ThemeSelector(),
             ListTile(
               leading: const Icon(Icons.language),
               title: const Text('Language'),

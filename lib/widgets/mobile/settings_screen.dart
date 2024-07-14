@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fusion/widgets/generic/theme_selector.dart';
 
 class SettingsScreen extends StatelessWidget {
   final VoidCallback onBack;
@@ -17,6 +18,7 @@ class SettingsScreen extends StatelessWidget {
           },
         ),
         // Add more settings options here
+        const ThemeSelector(),
         const Center(
           child: Text('Settings Screen'),
         ),

@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fusion/services/device_service.dart';
+import 'package:fusion/models/auth_result.dart';
 
 class AuthService {
   static const _storage = FlutterSecureStorage();
@@ -9,24 +11,29 @@ class AuthService {
   static const _refreshTokenKey = 'refreshToken';
   static const _apiUrl = 'http://10.0.0.50:3000';
 
-  static Future<bool> login(String username, String password) async {
+  static Future<AuthResult> login(username, String password) async {
     final deviceService = getDeviceService();
     final deviceId = await deviceService.getDeviceId();
 
-    final response = await http.post(Uri.parse('$_apiUrl/rpc/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(
-            {'email': username, 'pass': password, 'device_id': deviceId}));
+    try {
+      final response = await http.post(Uri.parse('$_apiUrl/rpc/login'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(
+              {'email': username, 'pass': password, 'device_id': deviceId}));
 
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      await _storage.write(key: _jwtKey, value: responseData['access_token']);
-      await _storage.write(
-          key: _refreshTokenKey, value: responseData['refresh_token']);
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        await _storage.write(key: _jwtKey, value: responseData['access_token']);
+        await _storage.write(
+            key: _refreshTokenKey, value: responseData['refresh_token']);
 
-      return true;
-    } else {
-      return false;
+        return AuthResult(success: true, message: 'Login Successful');
+      } else {
+        return AuthResult(success: false, message: 'Login Failed');
+      }
+    } catch (e) {
+      return AuthResult(
+          success: false, message: 'Unable to connect to $_apiUrl');
     }
   }
 
