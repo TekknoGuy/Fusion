@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/models/settings_model.dart';
+import 'package:fusion/services/app_state_service.dart';
 import 'package:provider/provider.dart';
 
 class ThemeSelector extends StatelessWidget {
@@ -7,7 +7,7 @@ class ThemeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = Provider.of<SettingsModel>(context);
+    final settings = Provider.of<AppStateService>(context);
 
     return ListTile(
       leading: const Icon(Icons.brightness_6),

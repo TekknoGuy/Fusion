@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/models/settings_model.dart';
+import 'package:fusion/services/app_state_service.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'layouts/base_layout.dart';
 
 void main() async {
   runApp(ChangeNotifierProvider(
-    create: (context) => SettingsModel(),
+    create: (context) => AppStateService(),
     child: const MyApp(),
   ));
 }
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsModel>(
+    return Consumer<AppStateService>(
       builder: (context, settings, child) {
         return MaterialApp(
             title: 'Flutter Platform Specific Demo',

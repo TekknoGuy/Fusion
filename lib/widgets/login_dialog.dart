@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/services/auth_service.dart';
+import 'package:provider/provider.dart';
 import 'package:fusion/widgets/custom_snackbar.dart';
+import 'package:fusion/services/app_state_service.dart';
+
 
 class LoginDialog extends StatefulWidget {
   const LoginDialog({super.key});
@@ -16,12 +18,12 @@ class LoginDialogState extends State<LoginDialog> {
   TextEditingController();
 
   Future<void> _login() async {
-    final result = await AuthService.login(
-        usernameController.text, passwordController.text);
+    final appState = Provider.of<AppStateService>(context, listen: false);
+    final result = await appState.login(usernameController.text, passwordController.text);
 
     if (!mounted) return; // Check if the widget is still in the widget tree
 
-    if (result.success) {
+    if (appState.isLoggedIn) {
       if (result.message != null) {
         CustomSnackBar.show(context, result.message!);
       }
