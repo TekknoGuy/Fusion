@@ -1,1 +1,0 @@
- /home/ryan/src/flutter/Fusion/.dart_tool/flutter_gen/gen_l10n/app_localizations_en.dart /home/ryan/src/flutter/Fusion/.dart_tool/flutter_gen/gen_l10n/app_localizations.dart:  /home/ryan/src/flutter/Fusion/l10n.yaml /home/ryan/src/flutter/Fusion/lib/localization/app_en.arb
