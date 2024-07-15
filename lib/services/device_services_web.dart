@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 import 'device_service.dart';
 
 class DeviceServiceImpl implements DeviceService {
-  static const _uuid = Uuid();
+  // static const _uuid = Uuid();
 
   @override
   Future<String> getDeviceId() async {

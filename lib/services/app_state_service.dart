@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:fusion/models/auth_result.dart';
 import 'package:fusion/services/auth_service.dart';
+import 'package:fusion/widgets/mobile/main_screen.dart';        // Needed for setMobileToHome
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStateService extends ChangeNotifier {
   AppStateService() {
     _loadSettings();
     _checkLoginStatus();
+  }
+
+  // Replace DisplayNotifier
+  Widget _currentMobileWidget = const Center(child: Text('Home Page'));
+  Widget get currentMobileWidget => _currentMobileWidget;
+
+  void setMobileToHome() {
+      if (_currentMobileWidget is! MainScreen) {
+        updateMobileWidget(const MainScreen());
+      }
+  }
+
+  void updateMobileWidget(Widget widget) {
+    _currentMobileWidget = widget;
+    notifyListeners();
   }
 
   // Authentication State

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fusion/widgets/generic/theme_selector.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final VoidCallback onBack;
+//  final VoidCallback onBack;
 
-  const SettingsScreen({super.key, required this.onBack});
+  // const SettingsScreen({super.key, required this.onBack});
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
           leading: const Icon(Icons.arrow_back),
           title: const Text('Back'),
           onTap: () {
-            onBack();
+            // onBack();
           },
         ),
         // Add more settings options here

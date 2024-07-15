@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/models/menu_item.dart';
-import 'package:fusion/widgets/mobile/profile_menu.dart';
-import 'package:fusion/widgets/mobile/profile_menu_items.dart';
+import 'package:provider/provider.dart';
+import 'package:fusion/services/app_state_service.dart';
 import 'package:fusion/widgets/mobile/main_screen.dart';
+import 'package:fusion/widgets/mobile/profile_menu.dart';
 
 class MobileLayout extends StatefulWidget {
   const MobileLayout({super.key});
@@ -12,60 +12,30 @@ class MobileLayout extends StatefulWidget {
 }
 
 class _MobileLayoutState extends State<MobileLayout> {
-  int _currentPage = 0;
-  final PageController _pageController = PageController();
-
-  late List<MenuItem> _menuItems;
-
-  @override
-  void initState() {
-    super.initState();
-    _menuItems = getMenuItems(() {
-      _goToPage(0);
-    });
-  }
-
   void _showProfileMenu(BuildContext context) {
-    debugPrint('Showing profile menu');
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return ProfileMenu(
-          menuItems: _menuItems,
-          onMenuItemSelected: (index) {
-            _goToPage(index);
-          },
-        );
+        return const ProfileMenu();
       },
     );
   }
 
-  void _onPageChanged(int page) {
-    setState(() {
-      _currentPage = page;
-    });
-  }
-
-  void _goToPage(int page) {
-    setState(() {
-      // _pageController.animateToPage(page,
-      //     duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-      _pageController.jumpToPage(page);
-    });
-  }
-
-  Future<bool> _onWillPop() async {
-    if (_currentPage != 0) {
-      _goToPage(0);
-      return false; // Prevents default back button behavior
+  Future<bool> _onWillPop(BuildContext context) async {
+    final appState =
+        Provider.of<AppStateService>(context, listen: false);
+    if (appState.currentMobileWidget is! MainScreen) {
+      appState.updateMobileWidget(const MainScreen());
+      return false; // Prevent app from exiting
     }
-    return true; // Allows the default back button behavior
+    return true; // Allow the app to exit
   }
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppStateService>(context);
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () => _onWillPop(context),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -80,21 +50,17 @@ class _MobileLayoutState extends State<MobileLayout> {
           actions: [
             IconButton(
               icon: const Icon(Icons.person_outlined),
+              color: (appState.isLoggedIn ? Colors.lightGreen : Colors.white),
               onPressed: () {
                 _showProfileMenu(context);
               },
             ),
           ],
         ),
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          physics: const NeverScrollableScrollPhysics(),
-          // Prevent swipe navigation
-          children: [
-            const MainScreen(),
-            ..._menuItems.map((item) => item.widgetBuilder()),
-          ],
+        body: Consumer<AppStateService>(
+          builder: (context, appState, child) {
+            return appState.currentMobileWidget;
+          },
         ),
       ),
     );

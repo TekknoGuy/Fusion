@@ -5,8 +5,10 @@ import 'theme/app_theme.dart';
 import 'layouts/base_layout.dart';
 
 void main() async {
-  runApp(ChangeNotifierProvider(
-    create: (context) => AppStateService(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => AppStateService()),
+    ],
     child: const MyApp(),
   ));
 }

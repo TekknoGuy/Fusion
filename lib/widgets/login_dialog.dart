@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:fusion/widgets/custom_snackbar.dart';
 import 'package:fusion/services/app_state_service.dart';
 
-
 class LoginDialog extends StatefulWidget {
   const LoginDialog({super.key});
 
@@ -13,15 +12,18 @@ class LoginDialog extends StatefulWidget {
 
 class LoginDialogState extends State<LoginDialog> {
   static final TextEditingController usernameController =
-  TextEditingController();
+      TextEditingController();
   static final TextEditingController passwordController =
-  TextEditingController();
+      TextEditingController();
 
-  Future<void> _login() async {
+  Future<bool> _login() async {
     final appState = Provider.of<AppStateService>(context, listen: false);
-    final result = await appState.login(usernameController.text, passwordController.text);
+    final result =
+        await appState.login(usernameController.text, passwordController.text);
 
-    if (!mounted) return; // Check if the widget is still in the widget tree
+    if (!mounted) {
+      return result.success; // Check if the widget is still in the widget tree
+    }
 
     if (appState.isLoggedIn) {
       if (result.message != null) {
@@ -30,6 +32,7 @@ class LoginDialogState extends State<LoginDialog> {
     } else {
       CustomSnackBar.show(context, result.message ?? 'An error occurred');
     }
+    return result.success;
   }
 
   @override
@@ -46,6 +49,7 @@ class LoginDialogState extends State<LoginDialog> {
   }
 
   Widget _buildDialogContent(BuildContext context) {
+    final appState = Provider.of<AppStateService>(context, listen: false);
     final theme = Theme.of(context);
     return Stack(
       children: <Widget>[
@@ -100,9 +104,10 @@ class LoginDialogState extends State<LoginDialog> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
-                  onPressed: () {
-                    _login();
-                    // Navigator.of(context).pop(); // Dismiss the dialog
+                  onPressed: () async {
+                    if (await _login()) {
+                      appState.setMobileToHome();
+                    }
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: theme.colorScheme.primary,

@@ -1,38 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/models/menu_item.dart';
+import 'package:fusion/services/app_state_service.dart';
+import 'package:fusion/widgets/login_dialog.dart';
+import 'package:fusion/widgets/mobile/profile_screen.dart';
+import 'package:fusion/widgets/mobile/settings_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProfileMenu extends StatelessWidget {
-  final List<MenuItem> menuItems;
-  final Function(int) onMenuItemSelected;
-
   const ProfileMenu({
     super.key,
-    required this.menuItems,
-    required this.onMenuItemSelected,
   });
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppStateService>(context, listen: false);
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: menuItems.asMap().entries.map((entry) {
-          int index = entry.key;
-          MenuItem item = entry.value;
-          return ListTile(
-            leading: Icon(item.icon),
-            title: Text(item.name),
-            onTap: () {
-              debugPrint('${item.name} option tapped');
-              Navigator.pop(context);  // Close the bottom sheet
-              Future.delayed(
-                  const Duration(milliseconds: 300),
-                      () => onMenuItemSelected(index + 1)
-              );  // Ensure state update after closing
+        children: [
+          // Profile
+          // Use Consumer to listen to AppStateService
+          Consumer<AppStateService>(
+            builder: (context, appState, child) {
+              return ListTile(
+                leading: const Icon(Icons.account_circle),
+                title: Text(appState.isLoggedIn ? 'Profile' : 'Login'),
+                onTap: () {
+                  Navigator.pop(context);
+                  if(appState.isLoggedIn) {
+                    context.read<AppStateService>().updateMobileWidget(const ProfileScreen());
+                  } else {
+                    context.read<AppStateService>().updateMobileWidget(const LoginDialog());
+                  }
+                }
+              );
             },
-          );
-        }).toList(),
+          ),
+          // Settings
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.pop(context); // Close the bottom sheet
+              context
+                  .read<AppStateService>()
+                  .updateMobileWidget(const SettingsScreen());
+            },
+          ),
+          // Logout
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: () async {
+              Navigator.pop(context); // Close the bottom sheet
+              await appState.logout();
+            },
+          ),
+        ],
       ),
     );
   }
