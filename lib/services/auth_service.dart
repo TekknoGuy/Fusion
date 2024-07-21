@@ -110,8 +110,10 @@ class AuthService {
 
     try {
       final response = await http.post(
-        Uri.parse('$apiBaseURL/rpc/refresh'),
-        body: jsonEncode({'refreshToken': refreshToken, 'deviceId': deviceId}),
+        Uri.parse('$apiBaseURL/rpc/exchange_refresh_token'),
+        // the deviceId is already in the token!
+        body: jsonEncode({'refreshToken': refreshToken}),
+        // body: jsonEncode({'refreshToken': refreshToken, 'deviceId': deviceId}),
         headers: {'Content-Type': 'application/json'},
       );
 
