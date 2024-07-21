@@ -12,14 +12,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  option_result: ^3.2.0                           # Because Rust has it figured out!
   http: ^1.2.1
   shared_preferences: ^2.0.6
-  device_info_plus: ^10.1.0            # Android/IOS DeviceID
-  universal_io: ^2.0.4                # Platform Checking on web/desktop
-  flutter_secure_storage: ^9.2.2      # Encrypted Local Storage
-  uuid: ^4.4.0                        # Generate local UUIDs
-  path_provider: ^2.0.11              # Local Paths
-  provider: ^6.0.0                    # Event Notifications
+  device_info_plus: ^10.1.0                       # Android/IOS DeviceID
+  universal_io: ^2.0.4                            # Platform Checking on web/desktop
+  flutter_secure_storage: ^9.2.2                  # Encrypted Local Storage
+  uuid: ^4.4.0                                    # Generate local UUIDs
+  path_provider: ^2.0.11                          # Local Paths
+  provider: ^6.0.0                                # Event Notifications
+  workmanager: ^0.5.2                             # Android Background Task Manager
+  jose: ^0.3.4                                    # JWT Decoding/Verification
 
   flutter_localizations:
     sdk: flutter
@@ -38,4 +41,6 @@ flutter:
 
   assets:
     # Add assets from the images directory to the application.
+    - assets/public_key.pem
+    - assets/public_key_test.pem
     - assets/images/

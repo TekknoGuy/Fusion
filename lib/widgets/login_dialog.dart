@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:option_result/result.dart';
 import 'package:provider/provider.dart';
+// import 'package:option_result/option_result.dart';
+
 import 'package:fusion/widgets/custom_snackbar.dart';
 import 'package:fusion/services/app_state_service.dart';
 
@@ -18,21 +21,38 @@ class LoginDialogState extends State<LoginDialog> {
 
   Future<bool> _login() async {
     final appState = Provider.of<AppStateService>(context, listen: false);
-    final result =
+    final loginResult =
         await appState.login(usernameController.text, passwordController.text);
 
+    // If the widget isn't mounted, we can't use the SnackBar.  Just return fail/success
     if (!mounted) {
-      return result.success; // Check if the widget is still in the widget tree
+      // Check if the widget is still in the widget tree
+      return loginResult.isOk() ? true : false;
     }
 
-    if (appState.isLoggedIn) {
-      if (result.message != null) {
-        CustomSnackBar.show(context, result.message!);
-      }
-    } else {
-      CustomSnackBar.show(context, result.message ?? 'An error occurred');
+    // toDo: I don't think we need to listen to appState here as loginResult contains more useful information
+    // if (appState.isLoggedIn) {
+    //   if (result.message != null) {
+    //     CustomSnackBar.show(context, result.message!);
+    //   }
+    // } else {
+    //   CustomSnackBar.show(context, result.message ?? 'An error occurred');
+    // }
+
+    if (loginResult case Err(:var e)) {
+      CustomSnackBar.show(context, e);
+      debugPrint(e.toString());
+      return false;
     }
-    return result.success;
+
+    CustomSnackBar.show(context, loginResult.unwrap());
+    debugPrint(loginResult.unwrap());
+    return true;
+    // toDo: See if this gives us both err and ok string.  It may not give either
+    CustomSnackBar.show(context, loginResult.toString());
+    debugPrint(loginResult.toString());
+
+    return loginResult.isOk() ? true : false;
   }
 
   @override

@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:fusion/services/app_state_service.dart';
+import 'package:fusion/services/auth_service.dart';
+import 'package:fusion/services/background_service.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'layouts/base_layout.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeService(); // Initialize the background service
+  AuthService.tokenLogin(); // If it fails, we just stay logged out
+
+  // final authService = AuthService();
+  // await authService.initialize();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => AppStateService()),

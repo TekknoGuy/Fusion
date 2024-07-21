@@ -1,4 +1,4 @@
-package com.example.fusion
+package ca.limestonemechanical.fusion
 
 import io.flutter.embedding.android.FlutterActivity
 

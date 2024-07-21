@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:fusion/models/auth_result.dart';
+import 'package:option_result/option_result.dart';
+
+// import 'package:fusion/models/auth_result.dart';
 import 'package:fusion/services/auth_service.dart';
-import 'package:fusion/widgets/mobile/main_screen.dart';        // Needed for setMobileToHome
+
+import 'package:fusion/widgets/mobile/main_screen.dart'; // Needed for setMobileToHome
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStateService extends ChangeNotifier {
+  final AuthService _authService = AuthService();
+
   AppStateService() {
     _loadSettings();
-    _checkLoginStatus();
+    // _checkLoginStatus();
   }
 
   // Replace DisplayNotifier
   Widget _currentMobileWidget = const Center(child: Text('Home Page'));
+
   Widget get currentMobileWidget => _currentMobileWidget;
 
   void setMobileToHome() {
-      if (_currentMobileWidget is! MainScreen) {
-        updateMobileWidget(const MainScreen());
-      }
+    if (_currentMobileWidget is! MainScreen) {
+      updateMobileWidget(const MainScreen());
+    }
   }
 
   void updateMobileWidget(Widget widget) {
@@ -26,35 +32,36 @@ class AppStateService extends ChangeNotifier {
   }
 
   // Authentication State
-  bool _isLoggIn = false;
+  bool _isLoggedIn = false;
 
-  bool get isLoggedIn => _isLoggIn;
+  bool get isLoggedIn => _isLoggedIn;
 
-  Future<void> _checkLoginStatus() async {
-    _isLoggIn = await AuthService.hasValidRefreshToken();
-    notifyListeners();
-  }
+  // Future<void> _checkLoginStatus() async {
+  //   _isLoggedIn = await AuthService.hasValidRefreshToken();
+  //   notifyListeners();
+  // }
 
-  Future<AuthResult> login(String username, String password) async {
+  // Updates _isLogged In & Updates listeners. Forwards result to caller
+  Future<Result> login(String username, String password) async {
     final result = await AuthService.login(username, password);
 
-    if(result.success) {
-      _isLoggIn = true;
-    } else {
-      _isLoggIn = false;
+    if (result case Err(:var e)) {
+      _isLoggedIn = false;
     }
+    _isLoggedIn = true;
+
     notifyListeners();
     return result;
   }
 
   Future<void> logout() async {
     await AuthService.logout();
-    _isLoggIn = false;
+    _isLoggedIn = false;
     notifyListeners();
   }
 
-  Future<void> refreshLoginStatus() async {
-    _isLoggIn = await AuthService.hasValidRefreshToken();
+  refreshLoginStatus() {
+    _isLoggedIn = AuthService.isLoggedIn;
     notifyListeners();
   }
 
