@@ -26,33 +26,17 @@ class LoginDialogState extends State<LoginDialog> {
 
     // If the widget isn't mounted, we can't use the SnackBar.  Just return fail/success
     if (!mounted) {
-      // Check if the widget is still in the widget tree
       return loginResult.isOk() ? true : false;
     }
 
-    // toDo: I don't think we need to listen to appState here as loginResult contains more useful information
-    // if (appState.isLoggedIn) {
-    //   if (result.message != null) {
-    //     CustomSnackBar.show(context, result.message!);
-    //   }
-    // } else {
-    //   CustomSnackBar.show(context, result.message ?? 'An error occurred');
-    // }
-
-    if (loginResult case Err(:var e)) {
-      CustomSnackBar.show(context, e);
-      debugPrint(e.toString());
+    if (loginResult.isErr()) {
+      CustomSnackBar.show(context, loginResult.unwrapErr());
+      debugPrint(loginResult.unwrapErr());
       return false;
     }
 
-    CustomSnackBar.show(context, loginResult.unwrap());
-    debugPrint(loginResult.unwrap());
+    CustomSnackBar.show(context, 'Login Successful');
     return true;
-    // toDo: See if this gives us both err and ok string.  It may not give either
-    CustomSnackBar.show(context, loginResult.toString());
-    debugPrint(loginResult.toString());
-
-    return loginResult.isOk() ? true : false;
   }
 
   @override

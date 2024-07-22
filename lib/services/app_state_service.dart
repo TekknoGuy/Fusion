@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:option_result/option_result.dart';
-
-// import 'package:fusion/models/auth_result.dart';
 import 'package:fusion/services/auth_service.dart';
-
 import 'package:fusion/widgets/mobile/main_screen.dart'; // Needed for setMobileToHome
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStateService extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  static final AppStateService _instance = AppStateService._internal();
 
-  AppStateService() {
+  factory AppStateService() {
+    return _instance;
+  }
+
+  AppStateService._internal() {
+    debugPrint("Initializing AppStateService...");
     _loadSettings();
-    // _checkLoginStatus();
   }
 
   // Replace DisplayNotifier
@@ -31,38 +32,23 @@ class AppStateService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Authentication State
+  /// Authentication State Management
   bool _isLoggedIn = false;
-
   bool get isLoggedIn => _isLoggedIn;
 
-  // Future<void> _checkLoginStatus() async {
-  //   _isLoggedIn = await AuthService.hasValidRefreshToken();
-  //   notifyListeners();
-  // }
+  void setLoginStatus(bool status) {
+    _isLoggedIn = status;
+    notifyListeners();
+  }
 
   // Updates _isLogged In & Updates listeners. Forwards result to caller
-  Future<Result> login(String username, String password) async {
+  Future<Result<void, String>> login(String username, String password) async {
     final result = await AuthService.login(username, password);
-
-    if (result case Err(:var e)) {
-      _isLoggedIn = false;
-    }
-    _isLoggedIn = true;
-
-    notifyListeners();
     return result;
   }
 
   Future<void> logout() async {
     await AuthService.logout();
-    _isLoggedIn = false;
-    notifyListeners();
-  }
-
-  refreshLoginStatus() {
-    _isLoggedIn = AuthService.isLoggedIn;
-    notifyListeners();
   }
 
   // Settings

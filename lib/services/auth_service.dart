@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:fusion/constant.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fusion/services/app_state_service.dart';
 import 'package:option_result/option_result.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,8 +16,6 @@ class AuthService {
   static Option<String> _accessToken = const None();
 
   static Option get accessToken => _accessToken;
-
-  static bool get isLoggedIn => _accessToken.isNone() ? false : true;
 
   static Future<Result<void, String>> login(
       String username, String password) async {
@@ -41,6 +40,7 @@ class AuthService {
           return Err(areTokensValid.unwrapErr());
         }
 
+        AppStateService().setLoginStatus(true);
         return const Ok(null);
       } else {
         return Err('Login failed with status ${response.statusCode}');
@@ -59,16 +59,18 @@ class AuthService {
     final storedRefreshToken = await _storage.read(key: _refreshTokenKey);
 
     if (storedRefreshToken == null) {
+      await logout();
       return const Err('refreshToken not found');
     }
 
     final refreshToken = await _isTokenValid(storedRefreshToken);
 
     if (refreshToken.isErr()) {
+      await logout();
       return Err('refreshToken ${refreshToken.unwrapErr()}');
     }
 
-    try {
+    try { // Something in this block is failing
       final response = await http.post(
         Uri.parse('$apiBaseURL/rpc/exchange_refresh_token'),
         body: jsonEncode({'refreshtoken': refreshToken}),
@@ -84,11 +86,14 @@ class AuthService {
           return Err(areTokensValid.unwrapErr());
         }
 
+        AppStateService().setLoginStatus(true);
         return const Ok(null);
       } else {
         return Err('token refresh failed with status: ${response.statusCode}');
       }
     } catch (e) {
+      // We're failing here for some reason on boot
+      debugPrint("ERROR - ${e.toString()}");
       return kDebugMode
           ? Err(e.toString())
           : const Err('failed to connect to $apiBaseURL');
@@ -138,6 +143,7 @@ class AuthService {
     _accessToken = Some(accessToken.unwrap());
     await _storage.write(key: _refreshTokenKey, value: refreshToken.unwrap());
 
+
     return const Ok(null);
   }
 
@@ -145,6 +151,7 @@ class AuthService {
   static Future logout() async {
     await _storage.delete(key: _refreshTokenKey);
     _accessToken = const None();
+    AppStateService().setLoginStatus(false);
     return;
   }
 }
