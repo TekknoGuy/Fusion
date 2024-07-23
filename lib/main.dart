@@ -9,6 +9,7 @@ import 'layouts/base_layout.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeService(); // Initialize the background service
+
   debugPrint("Attempting token login...");
   var isLoggedIn = await AuthService.refreshAccessToken(); // If it fails, we just stay logged out
   if(isLoggedIn.isErr()) {

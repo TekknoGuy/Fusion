@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/api.exchange_refresh_token.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/api.login.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/api.verify_jwt.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/auth_functions.jwt.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/authentication.users.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/_setup.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth/01.login.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth/02.refresh.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/check_role_exists.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/encrypt_pass.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/issue_refresh_token.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/sign_token.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/table.users.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/user_role.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/auth_protected/verify_token.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="PostgreSQL" />
   </component>
 </project>

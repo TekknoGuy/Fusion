@@ -27,7 +27,11 @@ class AuthService {
     try {
       final response = await http.post(
         Uri.parse('$apiBaseURL/rpc/login'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept-Profile': 'auth',
+          'Content-Profile': 'auth'
+        },
         body: jsonEncode(
             {'email': username, 'pass': password, 'device_id': deviceId}),
       );
@@ -70,11 +74,15 @@ class AuthService {
       return Err('refreshToken ${refreshToken.unwrapErr()}');
     }
 
-    try { // Something in this block is failing
+    try {
       final response = await http.post(
-        Uri.parse('$apiBaseURL/rpc/exchange_refresh_token'),
-        body: jsonEncode({'refreshtoken': refreshToken}),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('$apiBaseURL/rpc/refresh'),
+        body: jsonEncode({'refreshtoken': refreshToken.unwrap()}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept-Profile': 'auth',
+          'Content-Profile': 'auth'
+        },
       );
 
       if (response.statusCode == 200) {
@@ -92,8 +100,6 @@ class AuthService {
         return Err('token refresh failed with status: ${response.statusCode}');
       }
     } catch (e) {
-      // We're failing here for some reason on boot
-      debugPrint("ERROR - ${e.toString()}");
       return kDebugMode
           ? Err(e.toString())
           : const Err('failed to connect to $apiBaseURL');
@@ -142,7 +148,6 @@ class AuthService {
 
     _accessToken = Some(accessToken.unwrap());
     await _storage.write(key: _refreshTokenKey, value: refreshToken.unwrap());
-
 
     return const Ok(null);
   }

@@ -1,7 +1,13 @@
--- login should be on your exposed schema
+-- Note:
+-- the `auth` schema needs to grant permission to 'anonymous' user
+-- the 'authenticator' changes roles to 'anonymous' if no valid token with a 'role'
+-- is sent with the request.  Only keep things you don't care if 'anonymous'/everyone
+-- has access to. `SECURITY DEFINER` will run the function as the function's creator.
+
+DROP FUNCTION auth.login(email text, pass text, device_id text);
 
 CREATE OR REPLACE FUNCTION
-    api.login(email TEXT, pass TEXT, device_id TEXT) RETURNS JSON AS
+    auth.login(email TEXT, pass TEXT, device_id TEXT) RETURNS JSON AS
 $$
 DECLARE
     user_record   RECORD; -- We need to capture the user_id
@@ -11,9 +17,9 @@ DECLARE
 BEGIN
     SELECT *
     INTO user_record
-    FROM authentication.users
+    FROM auth_protected.users
     WHERE users.email = login.email
-      AND users.password = authentication.crypt(login.pass, users.password);
+      AND users.password = extensions.crypt(login.pass, users.password);
 
     IF NOT FOUND THEN
         RAISE invalid_password USING MESSAGE = 'Invalid username or password';
@@ -28,9 +34,9 @@ BEGIN
     END;
 
     -- Valid User Login, delete/invalidate existing refresh token for device and generate another
-    refresh_token := auth_functions.issue_refresh_token(user_record.id, device_uuid);
+    refresh_token := auth_protected.issue_refresh_token(user_record.id, device_uuid);
 
-    SELECT auth_functions.sign_jwt(row_to_json(r)) AS token
+    SELECT auth_protected.sign_token(row_to_json(r)) AS token
     FROM (SELECT user_record.role                             AS role,
                  login.email                                  AS email,
                  user_record.id                               AS sub,
@@ -47,5 +53,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-ALTER FUNCTION api.login(email TEXT, pass TEXT, device_id TEXT) OWNER TO fusion_db_admin;
-GRANT EXECUTE ON FUNCTION api.login(email TEXT, pass TEXT, device_id TEXT) TO fusion_web_anon;
+-- We don't need to grant specific function access for anonymous because they have 'USAGE' access to the schema.
